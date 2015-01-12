@@ -17,22 +17,9 @@ module Authority
       RUBY
     end
 
-    def can?(action, options = {})
-      self_and_maybe_options = [self, options].tap {|args| args.pop if args.last == {}}
-      begin
-        ApplicationAuthorizer.send("authorizes_to_#{action}?", *self_and_maybe_options)
-      rescue NoMethodError => original_exception
-        begin
-          # For backwards compatibility
-          response = ApplicationAuthorizer.send("can_#{action}?", *self_and_maybe_options)
-          Authority.logger.warn(
-            "DEPRECATION WARNING: Please rename `ApplicationAuthorizer.can_#{action}?` to `authorizes_to_#{action}?`"
-          )
-          response
-        rescue NoMethodError => new_exception
-          raise original_exception
-        end
-      end
+    def can?(action, resource_class, options = {})
+      self_and_maybe_options = [self, resource_class, options].tap { |args| args.pop if args.last == {} }
+      resource_class.authorizer.send("authorizes_to_#{action}?", *self_and_maybe_options)
     end
 
   end
