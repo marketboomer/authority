@@ -19,3 +19,5 @@ tmp
 *.swo
 .ruby-version
 .ruby-gemset
+*.log
+.idea

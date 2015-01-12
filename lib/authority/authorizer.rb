@@ -16,7 +16,7 @@ module Authority
     end
 
     # Whitelisting approach: anything not specified will be forbidden
-    def self.default(adjective, user, options = {})
+    def self.default(adjective, user, resource_class, options = {})
       false
     end
 
@@ -28,8 +28,8 @@ module Authority
     # Each class method simply calls the `default` method
     Authority.adjectives.each do |adjective|
       class_eval <<-RUBY, __FILE__, __LINE__ + 1
-        def self.#{adjective}_by?(user, options = {})
-          user_and_maybe_options = [user, options].tap {|args| args.pop if args.last == {}}
+        def self.#{adjective}_by?(user, resource_class, options = {})
+          user_and_maybe_options = [user, resource_class, options].tap {|args| args.pop if args.last == {}}
           default(:#{adjective}, *user_and_maybe_options)
         end
       RUBY

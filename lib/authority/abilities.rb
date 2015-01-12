@@ -23,6 +23,9 @@ module Authority
       end
     end
 
+    def resource_class
+      self.class
+    end
 
     def authorizer
       self.class.authorizer.new(self) # instantiate on every check, in case model has changed
@@ -33,7 +36,7 @@ module Authority
       # Not using Forwardable because it makes it harder for users to track an ArgumentError
       # back to their authorizer
       Authority.adjectives.each do |adjective|
-        define_method("#{adjective}_by?") { |*args| authorizer.send("#{adjective}_by?", *args) }
+        define_method("#{adjective}_by?") { |*args| authorizer.send("#{adjective}_by?", *args << resource_class) }
       end
     end
     include Definitions
@@ -44,6 +47,10 @@ module Authority
       def authorizer=(authorizer_class)
         @authorizer          = authorizer_class
         self.authorizer_name = @authorizer.name
+      end
+
+      def resource_class
+        self
       end
 
       # @return [Class] of the designated authorizer
