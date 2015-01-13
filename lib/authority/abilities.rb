@@ -24,7 +24,7 @@ module Authority
     end
 
     def authorizer_resource_class
-      self.class
+      self.class.authorizer_resource_class
     end
 
     def authorizer
