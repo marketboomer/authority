@@ -23,7 +23,7 @@ module Authority
       end
     end
 
-    def resource_class
+    def authorizer_resource_class
       self.class
     end
 
@@ -49,7 +49,7 @@ module Authority
         self.authorizer_name = @authorizer.name
       end
 
-      def resource_class
+      def authorizer_resource_class
         self
       end
 

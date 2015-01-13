@@ -11,7 +11,7 @@ module Authority
     Authority.verbs.each do |verb|
       class_eval <<-RUBY, __FILE__, __LINE__ + 1
         def can_#{verb}?(resource, options = {})
-          self_and_maybe_options = [self, resource.class.name == 'Class' ? resource : resource.class, options].tap {|args| args.pop if args.last == {}}
+          self_and_maybe_options = [self, resource.authorizer_resource_class, options].tap {|args| args.pop if args.last == {}}
           resource.#{Authority.abilities[verb]}_by?(*self_and_maybe_options)
         end
       RUBY
