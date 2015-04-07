@@ -10,19 +10,6 @@ module Authority
   module Abilities
     extend ActiveSupport::Concern
 
-    included do |base|
-      class_attribute :authorizer_name
-
-      # Set the default authorizer for this model.
-      # - Look for an authorizer named like the model inside the model's namespace.
-      # - If there is none, use 'ApplicationAuthorizer'
-      self.authorizer_name = begin
-        "#{base.name}Authorizer".constantize.name
-      rescue NameError => e
-        "ApplicationAuthorizer"
-      end
-    end
-
     def authorizer_resource_class
       self.class.authorizer_resource_class
     end
@@ -43,6 +30,14 @@ module Authority
 
     module ClassMethods
       include Definitions
+
+      def authorizer_name
+        begin
+          "#{self.name}Authorizer".constantize.name
+        rescue NameError => e
+          "ApplicationAuthorizer"
+        end
+      end
 
       def authorizer=(authorizer_class)
         @authorizer          = authorizer_class
